@@ -1,3 +1,4 @@
+import heapq
 from collections import OrderedDict
 from collections import Counter
 
@@ -28,7 +29,8 @@ def getTopKFrequentEvents(events, k):
     # print(arr)
     return arr
 
-def chatGPT_solution(events, k):
+#llm solution that returns top k elements with tie breaker by first appearance but is not optimal
+def sortCounter(events, k):
     freq = Counter(events)
     print(freq)
     first_index = {}
@@ -43,10 +45,32 @@ def chatGPT_solution(events, k):
     # output of first_index[x] is used to break the tie
     elements = list(freq.keys())
     elements.sort(key=lambda x: (-freq[x], first_index[x]))
-    print(elements)
+    result = []
+    for i in range(k): result.append(elements[i])
+    return result
+
+#optimal solution but returns without order or tie breaker
+def optimalHeapSolution(events, k):
+    freq = Counter(events)
+
+    first_occurrence = {}
+    for i, value in enumerate(events):
+        if value not in first_occurrence:
+            first_occurrence[value] = i
+
+    heap = []
+    for num, count in freq.items():
+        heapq.heappush(heap, (count, num))
+        if len(heap) > k:
+            heapq.heappop(heap)
+
+
+
+    return [num for _, num in heap]
 
 #if there is a tie in occurrences, the one that appeared first wins
 events = [4, 1, 2, 2, 4, 3, 1, 4]
 k = 3
 # print(getTopKFrequentEvents(events, k))
-chatGPT_solution(events, k)
+print(sortCounter(events, k))
+print(optimalHeapSolution(events, k))
