@@ -68,9 +68,14 @@ def optimalHeapSolution(events, k):
 
     return [num for _, num in heap]
 
+#one-liner using Counter but not most optimal (O(nlogn) which is > O(nlogk))
+def topKFrequent(nums, k):
+    return [num for num, count in Counter(nums).most_common(k)]
+
 #if there is a tie in occurrences, the one that appeared first wins
 events = [4, 1, 2, 2, 4, 3, 1, 4]
 k = 3
 # print(getTopKFrequentEvents(events, k))
 print(sortCounter(events, k))
 print(optimalHeapSolution(events, k))
+print(topKFrequent(events, k))
