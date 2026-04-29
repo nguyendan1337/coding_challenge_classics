@@ -49,8 +49,21 @@ def minMeetingRooms(intervals: List[List[int]]) -> int:
     Returns:
         Minimum number of meeting rooms required
     """
-    # Your code here
-    pass
+    if not intervals:
+        return 0
+    sorted_events = []
+    for start, end in intervals:
+        sorted_events.append((start, 1))
+        sorted_events.append((end, -1))
+    sorted_events.sort()
+
+    current_overlap = 0
+    max_overlap = 0
+    for event, value in sorted_events:
+        current_overlap += value
+        max_overlap = max(max_overlap, current_overlap)
+
+    return max_overlap
 
 
 # ------------------------
