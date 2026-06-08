@@ -1,50 +1,38 @@
 
-#my solution which passes 265/268 test cases
+#my solution which passes all but takes a while and uses a lot of memory
+
 from collections import Counter
-
-def substring_contains_t(substring, t_counter):
-    substring_counter = Counter(substring)
-    for char, count in t_counter.items():
-        if char not in substring_counter or count > substring_counter[char]:
-            return False
-
-    return True
 class Solution:
-
     def minWindow(self, s: str, t: str) -> str:
-        m = len(s)
-        n = len(t)
-        if n > m:
+        n = len(s)
+        if len(t) > n:
             return ""
+        t_count = Counter(t)
+        minimum_substring = ""
+
+        sliding_window = []
+        sliding_window_count = Counter()
+        for right in range(n):
+
+            sliding_window.append(s[right])
+            sliding_window_count[s[right]] += 1
+
+            hypothetical = sliding_window_count.copy()
+            hypothetical[sliding_window[0]] -= 1
+
+            while hypothetical >= t_count:
+                c = sliding_window.pop(0)
+                sliding_window_count[c] -= 1
+
+                hypothetical = sliding_window_count.copy()
+                hypothetical[sliding_window[0]] -= 1
+
+            if (sliding_window_count >= t_count and len(sliding_window) < len(minimum_substring)) or (sliding_window_count >= t_count and minimum_substring==""):
+                minimum_substring = sliding_window.copy()
 
 
-        left = 0
-        t_counter = Counter(t)
-        min_substring = s
-        substring = []
-        found = False
+        return "".join(minimum_substring)
 
-        for right in range(m):
-            substring.append(s[right])
-
-            if substring_contains_t("".join(substring), t_counter):
-                found = True
-
-                can_shift_left = False
-                if substring_contains_t("".join(substring[1:]), t_counter):
-                    can_shift_left = True
-                    while can_shift_left:
-                        left += 1
-                        substring.pop(0)
-                        if not substring_contains_t("".join(substring[1:]), t_counter):
-                            can_shift_left = False
-
-            if found and len(substring) < len(min_substring):
-                min_substring = "".join(substring)
-
-        if found:
-            return min_substring
-        return ""
 
 #chatgpt solution
 def chatGPT_solution(self, s: str, t: str) -> str:
